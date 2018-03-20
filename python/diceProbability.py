@@ -4,6 +4,7 @@ if __name__ == '__main__':
     import sys
     
     import argparse
+    # Command Line Parser --------------------------------------------------------------------------
     parser = argparse.ArgumentParser(description='Calculates the probability of a successful dice roll')
 
     parser.add_argument('dice', type=int, nargs='+', metavar='Dice',
@@ -18,29 +19,34 @@ if __name__ == '__main__':
     parser.add_argument('--advantage', type=int, choices=[0, 1],
             help='First role is rolled with advantage. Max(2d?)')
     args = parser.parse_args()
+    # ---------------------------------------------------------------------------------------------
 
-    # Statistics Variables
+    # Statistics Variables ------------------------------------------------------------------------
     N           = args.N        if args.N       != None else 10000
     threshold   = args.success  if args.success != None else 10
     die         = args.dice
     
-    # Roll Modifiers
+    # Roll Modifiers ------------------------------------------------------------------------------
     perception_mod, range_mod, cover_mod, height_mod = \
             args.modifiers if args.modifiers != None else [0, 0, 0, 0]
 
+    # Calculate Statistics ------------------------------------------------------------------------
     successes = 0
     for i in range(N):
         dice = 0
+        # advantage calculation
         if args.advantage == 1:
             dice += max(randint(1, die[0]), randint(1, die[0])) + sum( [randint(1, i) for i in die[1:]] )
         else:
             dice = sum( [randint(1, i) for i in die] )
-
+        
+        # roll modifier calculation
         roll = dice + range_mod + perception_mod
         roll = roll - cover_mod - height_mod
         if roll >= threshold:
             successes += 1
     
+    # Output to stdout ----------------------------------------------------------------------------
     output = """
     Modifiers----------------------------------------------
     Perception: {}
