@@ -25,12 +25,6 @@ def fizz_buzz(iterations):
 
 def string_manip(string):
     """Count number of words that end in y or z"""
-
-    #  tokens = string.split(' ')
-    #  count = 0
-    #  for token in tokens:
-    #      if token[-1] in ['y', 'z']:
-    #          count += 1
     if len(string) == 0:
         return 0
     
@@ -45,36 +39,65 @@ def string_manip(string):
 
     return(count + 1 if string[-1] in letters else count)
 
-from collections import defaultdict
+
 def target_number(nums, target):
-    
+    """Return every distinct pair that adds up to the target value."""
     pairs = []
     checked = set()
-    for val in nums:
-        temp = target - val
-        if temp >= 0 and temp in checked:
-            pairs.append((val, temp))
-        checked.add(val)
+    for num in nums:
+        if num not in checked and \
+                target - num in nums:
+            checked.add(num)
+            checked.add(target - num)
+            pairs.append((num, target - num))
 
     return pairs
 
-
-    #  frequencies = defaultdict(int)
-    #  for val in nums:
-    #      frequencies[val] += 1
-    #  
-    #  pairs = []
-    #  for key in frequencies.keys():
-    #      if (target - key) in frequencies:
-    #          pairs.append((key, target - key))
-    #          del frequencies[key]
-    #          if target - key != key:
-    #              del frequencies[target - key]
-    #  
-    return pairs
+from collections import Counter
+import Queue as Q
+def adjacent_characters(string):
+    frequencies = Counter()
+    for char in string:
+        frequencies[char] += 1
     
+    fixed_str = ''
+    q = Q.PriorityQueue()
+
+    for val in frequencies.most_common(): q.put([ -val[1], val[0] ])
+    
+    last_pair = [float('inf'), None]
+    while q.qsize() != 0:
+        print(q.queue)
+        temp = q.get()
+        fixed_str += temp[1]
+        temp[0] += 1
+
+        if last_pair[0] < 0:
+            q.put(last_pair)
+
+        last_pair = temp
+    return fixed_str if len(fixed_str) == len(string) else 'NOT POSSIBLE'
+
+def stagger(arr):
+    arr.sort(key = lambda x: x[1])
+    return arr
 
 if __name__ == "__main__":
     #  fizz_buzz(10)
     #  print(string_manip('zz'))
-    print(target_number([1, 4, 45, 6, 10, 8, 12, 4, 12], 16))
+    #  print(target_number([1, 4, 45, 6, 10, 8, 12, 4, 12], 16))
+    #  print(adjacent_characters('aaab'))
+    print(stagger(['a1', 'a2', 'a3', 'b1', 'b2', 'b3', 'c1', 'c2', 'c3']))
+    
+
+
+
+
+
+
+
+
+
+
+
+
